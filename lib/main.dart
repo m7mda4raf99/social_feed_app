@@ -1,7 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:social_feed_app/models/user_model.dart';
 import 'package:social_feed_app/services/router_service.dart';
 
-void main() {
+void main() async {
+  // Initialize Hive and Hive Flutter
+  await Hive.initFlutter();
+
+  // Register User adapter
+  Hive.registerAdapter(UserAdapter());
+
+  // Open a Hive box for storing users
+  await Hive.openBox<User>('users');
+
+  var userBox = Hive.box<User>('users');
+
+  print(userBox);
+
+  List<User> allUsers = userBox.values.toList();
+
+  print(allUsers);
+
   runApp(const MyApp());
 }
 
@@ -12,7 +31,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'BLNK Mobile Task',
+      title: 'Social Feed App',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
@@ -34,10 +53,31 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+  void _incrementCounter() async {
+    var userBox = Hive.box<User>('users');
+
+    // Create a new user instance
+    // var newUser = User(
+    //   id: '1',
+    // username: 'm7mdaraf99',
+    // password: 'password123', // Store passwords securely in real applications
+    // profileImageUrl: 'https://example.com/profile.jpg',
+    // );
+
+    // var newUser = await User.create(
+    //   username: 'm7mdaraf99',
+    //   password: 'password123', // Store passwords securely in real applications
+    //   profileImageUrl: 'https://example.com/profile.jpg',
+    // );
+
+    // // // Store the user in the box
+    // userBox.put(newUser.id, newUser);
+
+    print(userBox);
+
+    List<User> allUsers = userBox.values.toList();
+
+    print(allUsers[1].id);
   }
 
   @override
