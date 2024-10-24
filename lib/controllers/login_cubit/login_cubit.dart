@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
 import 'package:social_feed_app/models/user_model.dart';
 
 part 'login_state.dart';
@@ -9,7 +10,7 @@ class LoginCubit extends Cubit<LoginState> {
   final userBox;
   LoginCubit(this.userBox) : super(LoginInitial());
 
-  void login(Map<String, dynamic> textFormFields) {
+  void login(Map<String, dynamic> textFormFields) async {
     emit(LoginInitial());
 
     try {
@@ -25,6 +26,9 @@ class LoginCubit extends Cubit<LoginState> {
 
         // Check if the password matches
         if (user.password == password) {
+          // Save user login info to Hive
+          await _saveUserLoginToHive(user);
+
           // Proceed with the login logic
           emit(LoginSuccess(user));
         } else {
@@ -39,5 +43,24 @@ class LoginCubit extends Cubit<LoginState> {
       // Handle error
       emit(LoginError("An error occurred while logging in."));
     }
+  }
+
+  Future<void> _saveUserLoginToHive(User user) async {
+    // Open a Hive box to store the user's login session
+    var loginBox = await Hive.openBox('loginBox');
+
+    // Store user data, such as the user ID, username, etc.
+
+    // Save a flag indicating the user is logged in
+    await loginBox.put('isLoggedIn', true);
+
+    // Save the logged-in user ID
+    await loginBox.put('userId', user.id);
+
+    // Save the logged-in user's username
+    await loginBox.put('username', user.username);
+
+    // Save the logged-in user's profile image URL
+    await loginBox.put('profileImageUrl', user.profileImageUrl);
   }
 }

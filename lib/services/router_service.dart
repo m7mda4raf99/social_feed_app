@@ -10,8 +10,8 @@ class RouterService {
   static final userBox = Hive.box<User>('users');
 
   static final routes = {
-    // '/': (context) => const SplashScreen(),
-    '/': (context) => BlocProvider(
+    '/': (context) => const SplashScreen(),
+    '/login': (context) => BlocProvider(
           create: (context) => LoginCubit(userBox),
           child: LoginScreen(),
         ),

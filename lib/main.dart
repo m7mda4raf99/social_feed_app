@@ -12,18 +12,10 @@ void main() async {
 
   // Open a Hive box for storing users
   await Hive.openBox<User>('users');
-
   var userBox = Hive.box<User>('users');
 
-  print(userBox);
-
   List<User> allUsers = userBox.values.toList();
-
-  // print(allUsers);
-
-  print(allUsers[0].username);
-  print(allUsers[1].username);
-  print("ashraf");
+  print(allUsers);
 
   runApp(const MyApp());
 }

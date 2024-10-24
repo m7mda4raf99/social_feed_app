@@ -1,6 +1,9 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:social_feed_app/utils/image_constant.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -55,7 +58,20 @@ class SplashScreen extends StatelessWidget {
     );
   }
 
-  onTapSplashScreen(BuildContext context) async {
-    Navigator.pushNamed(context, '/login');
+  Future<void> onTapSplashScreen(BuildContext context) async {
+    // Open the Hive box to check login status
+    var loginBox = await Hive.openBox('loginBox');
+
+    // Check if the user is logged in
+    bool isLoggedIn = loginBox.get('isLoggedIn', defaultValue: false);
+
+    // Navigate to the correct screen based on the login status
+    if (isLoggedIn) {
+      // Navigate to the home screen if the user is logged in
+      Navigator.pushReplacementNamed(context, '/home');
+    } else {
+      // Navigate to the login screen if the user is not logged in
+      Navigator.pushReplacementNamed(context, '/login');
+    }
   }
 }
